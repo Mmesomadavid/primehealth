@@ -77,11 +77,11 @@ const Login = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-green-700 text-white py-2 rounded-md hover:bg-green-500 transition-colors duration-300 mb-4"
+            className="w-full bg-gray-700 text-white py-2 rounded-md hover:bg-green-600 transition-colors duration-300 mb-4"
           >
             Login to Your Account
           </button>
-          <p className="text-gray-400 text-center">don't have an account? <a href="/register" className="text-gray-500">register</a></p>
+          <p className="text-gray-400 text-center">don't have an account? <a href="/" className="text-gray-500">register</a></p>
           
 
           {/* Divider with Social Auth */}

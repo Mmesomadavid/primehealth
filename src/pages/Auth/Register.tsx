@@ -174,12 +174,12 @@ const Register = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300"
+            className="w-full bg-blue-700 text-white py-2 rounded-md hover:bg-blue-600 transition-colors duration-300 mb-2"
             disabled={!termsAccepted || !passwordsMatch || !userType}
           >
             Register
           </button>
-          <p className="text-gray-700 text-center">Already have an account? <a href="/login" className="text-blue-600">Login</a></p>
+          <p className="text-gray-700 text-center">Already have an account? <a href="/signin" className="text-blue-600">Login</a></p>
 
          {/* Divider with Social Auth */}
          <div className="flex items-center my-4">
