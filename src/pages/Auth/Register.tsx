@@ -6,7 +6,7 @@ import { FaApple } from "react-icons/fa";
 import rightImg from '../../assets/images/onboard2.jpg';
 import IconWrapper from "../../components/IconWrapper"; // Import the IconWrapper
 import { Link } from 'react-router-dom'; // Import Link from react-router-dom
-
+import { ArrowUpLeft } from "lucide-react";
 
 const Register = () => {
   const [firstName, setFirstName] = useState("");
@@ -206,7 +206,11 @@ const Register = () => {
       {/* Right Section - Image Background */}
       <div className="hidden md:flex relative w-1/2 bg-cover bg-center" style={{ backgroundImage: `url(${rightImg})` }}>
         <div className="absolute inset-0 bg-black opacity-20"></div>
-
+            {/* Button at the top right */}
+            <button className="absolute top-4 right-4 flex items-center justify-center bg-white text-black text-sm px-3 py-2 rounded shadow-md hover:bg-gray-100 transition duration-300">
+                <ArrowUpLeft className="mr-1" size={16} /> {/* Adjust size as needed */}
+                Explore
+            </button>
       </div>
     </div>
   );
