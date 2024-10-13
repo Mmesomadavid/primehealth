@@ -5,6 +5,8 @@ import { FcGoogle } from "react-icons/fc"; // Import Google icon
 import { FaApple } from "react-icons/fa"; // Import Apple icon
 import rightImg from '../../assets/images/onboard1.jpg';
 import IconWrapper from "../../components/IconWrapper"; // Import the IconWrapper
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
+
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -81,8 +83,10 @@ const Login = () => {
           >
             Login to Your Account
           </button>
-          <p className="text-gray-400 text-center">don't have an account? <a href="/" className="text-gray-500">register</a></p>
-          
+          <p className="text-gray-400 text-center">
+            don't have an account? 
+            <Link to="/register" className="text-gray-500"> register</Link> {/* Use Link for routing */}
+            </p>
 
           {/* Divider with Social Auth */}
           <div className="flex items-center my-4">

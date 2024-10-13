@@ -5,6 +5,7 @@ import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
 import rightImg from '../../assets/images/onboard2.jpg';
 import IconWrapper from "../../components/IconWrapper"; // Import the IconWrapper
+import { Link } from 'react-router-dom'; // Import Link from react-router-dom
 
 
 const Register = () => {
@@ -179,7 +180,10 @@ const Register = () => {
           >
             Register
           </button>
-          <p className="text-gray-700 text-center">Already have an account? <a href="/signin" className="text-blue-600">Login</a></p>
+          <p className="text-gray-400 text-center">
+            don't have an account? 
+            <Link to="/login" className="text-gray-500"> register</Link> {/* Use Link for routing */}
+            </p>
 
          {/* Divider with Social Auth */}
          <div className="flex items-center my-4">
