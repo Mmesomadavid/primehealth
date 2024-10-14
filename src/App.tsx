@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import Login from './pages/Auth/Login';
 import Register from './pages/Auth/Register';
@@ -6,33 +6,40 @@ import Loader from "./components/Loader";
 
 function App() {
   const [loading, setLoading] = useState(true);
+  const location = useLocation(); // Use this to detect route changes
 
-  // Simulating a loading effect
+  // Simulate initial loading effect
   useEffect(() => {
     const loadData = async () => {
-      // Simulate a data fetching or loading time
       await new Promise((resolve) => setTimeout(resolve, 2000)); // Simulating 2 seconds loading time
-      setLoading(false); // Set loading to false after data has loaded
+      setLoading(false);
     };
-
     loadData();
   }, []);
+
+  // Show loader during route transitions
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setLoading(true);
+      setTimeout(() => setLoading(false), 1000); // Optional delay to show the loader for at least 1 second during transitions
+    };
+
+    handleRouteChange(); // Call once to handle initial page load
+  }, [location]); // Runs this effect every time the route changes
 
   if (loading) {
     return <Loader />; // Show loader while loading
   }
 
   return (
-    <Router>
-      <Routes>
-        {/* Public Routes: Login and Register */}
-        <Route path="/login" element={<Login />} />
-        <Route path="/signin" element={<Login />} />
-        <Route path="/" element={<Register />} />
-        <Route path="/signup" element={<Register />} />
-        <Route path="/register" element={<Register />} />
-      </Routes>
-    </Router>
+    <Routes>
+      {/* Public Routes: Login and Register */}
+      <Route path="/login" element={<Login />} />
+      <Route path="/signin" element={<Login />} />
+      <Route path="/" element={<Register />} />
+      <Route path="/signup" element={<Register />} />
+      <Route path="/register" element={<Register />} />
+    </Routes>
   );
 }
 

@@ -1,14 +1,15 @@
-import logoImg from '../assets/logo/logo.svg';
+import Lottie from 'lottie-react';
+import animationData from '../assets/animations/loader.json'; // Make sure this path is correct
 
 const Loader = () => {
   return (
-    <div className="flex items-center justify-center h-screen bg-gray-900">
-      <div className="relative flex items-center justify-center">
-        {/* Spinner */}
-        <div className="absolute border-t-4 border-b-4 border-blue-500 rounded-full h-24 w-24 animate-spin"></div>
-        {/* Logo */}
-        <img src={logoImg} alt="Loading..." className="h-12 w-12" />
-      </div>
+    <div className="flex items-center justify-center h-screen bg-gray-800 w-screen overflow-hidden">
+      <Lottie
+        animationData={animationData}
+        loop={true}
+        style={{ width: '100vw', height: '100vh', position: 'absolute', top: 0, left: 0 }}
+      />
+      <span className='flex w-4 h-[2px] rounded-full slideLoad bg-[#106fff]'></span>
     </div>
   );
 };
