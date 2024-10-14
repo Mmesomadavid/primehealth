@@ -2,6 +2,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Raleway:ital,wght@0,100..900;1,100..900&family=Source+Sans+3:ital,wght@0,200..900;1,200..900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Afacad+Flux:wght@100..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -30,4 +31,47 @@ span{
 .loader-text{
   font-family: 'Afacad Flux', sans-serif;
   letter-spacing: 8px;
+}
+
+/* Alert.css */
+.alert-slide-enter {
+  opacity: 0;
+  transform: translateY(-100%);
+}
+.alert-slide-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+.alert-slide-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+.alert-slide-exit-active {
+  opacity: 0;
+  transform: translateY(-100%);
+  transition: opacity 300ms ease-in-out, transform 300ms ease-in-out;
+}
+
+@keyframes slideLoad {
+  0% {
+    transform: translateX(-100%); /* Start off-screen left */
+  }
+  50% {
+    transform: translateX(0); /* Move into view */
+  }
+  100% {
+    transform: translateX(100%); /* Move off-screen right */
+  }
+}
+
+.slideLoad {
+  animation: slideLoad 3s ease-in-out infinite; /* Adjust duration as needed */
+  position: absolute; /* Position it absolutely within the Loader */
+  bottom: 10px; /* Adjust as needed */
+  left: 0; /* Start at the left edge */
+  width: 100%; /* Span the full width of the screen */
+  height: 4px; /* Increased height for visibility */
+  background-color: #106fff; /* Use a solid color for visibility */
+  box-shadow: 0 0 10px rgba(16, 111, 255, 0.6); /* Optional: Add shadow for effect */
 }
