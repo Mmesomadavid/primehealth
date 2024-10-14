@@ -43,11 +43,4 @@ function App() {
   );
 }
 
-// Wrap the App component with BrowserRouter
-const WrappedApp = () => (
-  <Router>
-    <App />
-  </Router>
-);
-
-export default WrappedApp;
+export default App;
