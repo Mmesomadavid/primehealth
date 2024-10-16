@@ -28,6 +28,14 @@ span{
   font-family: "Nunito", sans-serif
 }
 
+button{
+  font-family: 'Noto Sans', sans-serif;
+}
+.otp-head{
+  font-family: 'AfacadFlux', sans-serif;
+}
+
+
 .loader-text{
   font-family: 'Afacad Flux', sans-serif;
   letter-spacing: 8px;

@@ -3,33 +3,34 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { FcGoogle } from "react-icons/fc";
 import { FaApple } from "react-icons/fa";
+import { ArrowUpLeft } from "lucide-react";
 import rightImg from '../../assets/images/onboard2.jpg';
 import IconWrapper from "../../components/IconWrapper";
 import { Link } from 'react-router-dom';
-import { ArrowUpLeft } from "lucide-react";
 import Alert from "../../components/UI/Alert";
 import Btn from "../../components/UI/Btn";
 import { contextData } from "../../context/AuthContext";
+import OtpModal from "../../components/otpModal"; // Ensure the correct path to your OtpModal
 
 const Register: React.FC = () => {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [companyName] = useState(""); // State for Company Name
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [userType, setUserType] = useState(""); // User type state
+  const [accountType, setAccountType] = useState(""); 
   const [showPassword, setShowPassword] = useState(false);
   const [termsAccepted, setTermsAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false); // State for popup visibility
   const passwordsMatch = password && confirmPassword && password === confirmPassword;
   const url = import.meta.env.VITE_REACT_APP_SERVER_URL;
   const { user } = contextData();
 
   const validateForm = (): string => {
-    if (userType === "none") return "Please select an account type";
+    if (accountType === "") return "Please select a user type";
     if (email.length < 5 || !email.includes("@")) return "Please enter a valid email address";
     if (firstName.length < 3) return "Your first name must be at least 3 characters";
     if (lastName.length < 3) return "Your last name must be at least 3 characters";
@@ -43,18 +44,27 @@ const Register: React.FC = () => {
     setError(null);
     const { id, value } = e.target;
 
-    if (id === "userType") {
-      setUserType(value);
-    } else if (id === "email") {
-      setEmail(value.toLowerCase());
-    } else if (id === "firstName") {
-      setFirstName(value);
-    } else if (id === "lastName") {
-      setLastName(value);
-    } else if (id === "password") {
-      setPassword(value);
-    } else if (id === "confirm-password") {
-      setConfirmPassword(value);
+    switch (id) {
+      case "accountType":
+        setAccountType(value);
+        break;
+      case "email":
+        setEmail(value.toLowerCase());
+        break;
+      case "firstName":
+        setFirstName(value);
+        break;
+      case "lastName":
+        setLastName(value);
+        break;
+      case "password":
+        setPassword(value);
+        break;
+      case "confirm-password":
+        setConfirmPassword(value);
+        break;
+      default:
+        break;
     }
   };
 
@@ -83,8 +93,7 @@ const Register: React.FC = () => {
           firstName,
           lastName,
           password,
-          userType,
-          companyName, // Include companyName in the request body
+          accountType,
         }),
       });
 
@@ -94,7 +103,7 @@ const Register: React.FC = () => {
       } else {
         const successData = await res.json();
         setSuccess(successData.message || "Registration successful!");
-        // Redirect or handle post-registration logic
+        setShowPopup(true); // Show the popup
       }
     } catch (err) {
       setError("Failed to register. Please try again later.");
@@ -105,147 +114,127 @@ const Register: React.FC = () => {
 
   return (
     !user && (
-        <div className="flex min-h-screen">
+      <div className="flex min-h-screen relative">
         {/* Left Section - Form */}
-        <div className="w-full md:w-1/2 flex flex-col bg-white p-8 relative">
+        <div className={`w-full md:w-1/2 flex flex-col bg-white p-8 relative z-20`}>
           <div className="absolute top-0 left-0 p-4">
             <Header />
           </div>
           <form className="w-full max-w-md mt-20 mx-auto" onSubmit={handleSubmit}>
             {/* User Type Selection */}
             <div className="mb-4">
-              <label htmlFor="userType" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="accountType" className="block text-sm font-medium text-gray-700">
                 I am a:
               </label>
               <select
-                id="userType"
-                value={userType}
+                id="accountType"
+                value={accountType}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 required
               >
                 <option value="" disabled>Select your role</option>
-                <option value="Doctor">Health Organisation</option>
-                <option value="Patient">Patient</option>
+                <option value="healthOrg">Health Organisation</option>
+                <option value="patient">Patient</option>
               </select>
             </div>
-  
-            {/* Conditionally Rendered Input Fields */}
-            {userType === "Doctor" ? (
-              // Company Name Input for Health Organisation
-              <div className="mb-4">
-                <label htmlFor="company-name" className="block text-sm font-medium text-gray-700">Company Name</label>
+
+            {/* First Name and Last Name Inputs */}
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/2">
+                <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
                 <input
                   type="text"
-                  id="company-name"
-                  value={companyName}
+                  id="firstName"
+                  value={firstName}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter your company name"
+                  placeholder="Enter your first name"
                   required
                 />
               </div>
-            ) : (
-              // First Name and Last Name Inputs for Individual Users
-              <div className="flex gap-4 mb-4">
-                <div className="w-1/2">
-                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">First Name</label>
-                  <input
-                    type="text"
-                    id="firstName"
-                    value={firstName}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="Enter your first name"
-                    required
-                  />
-                </div>
-                <div className="w-1/2">
-                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
-                  <input
-                    type="text"
-                    id="lastName"
-                    value={lastName}
-                    onChange={handleChange}
-                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    placeholder="Enter your last name"
-                    required
-                  />
-                </div>
+              <div className="w-1/2">
+                <label htmlFor="lastName" className="block text-sm font-medium text-gray-700">Last Name</label>
+                <input
+                  type="text"
+                  id="lastName"
+                  value={lastName}
+                  onChange={handleChange}
+                  className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  placeholder="Enter your last name"
+                  required
+                />
               </div>
-            )}
-  
+            </div>
+
             {/* Email Input */}
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                {userType === "Doctor" ? "Company Email" : "Email Address"}
-              </label>
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email Address</label>
               <input
                 type="email"
                 id="email"
                 value={email}
                 onChange={handleChange}
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder={userType === "Doctor" ? "Enter your company email" : "Enter your email"}
+                placeholder="Enter your email"
                 required
               />
             </div>
-  
-            {/* Password Input */}
-            <div className="mb-4">
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
-              <div className="relative">
+
+            {/* Password and Confirm Password Inputs */}
+            <div className="flex gap-4 mb-4">
+              <div className="w-1/2">
+                <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+                <div className="relative">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="password"
+                    value={password}
+                    onChange={handleChange}
+                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    placeholder="Enter your password"
+                    required
+                  />
+                  <button
+                    type="button"
+                    className="absolute inset-y-0 right-0 flex items-center pr-2"
+                    onClick={handleShowPassword}
+                  >
+                    {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
+                  </button>
+                </div>
+              </div>
+              <div className="w-1/2">
+                <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm Password</label>
                 <input
                   type={showPassword ? "text" : "password"}
-                  id="password"
-                  value={password}
+                  id="confirm-password"
+                  value={confirmPassword}
                   onChange={handleChange}
                   className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                  placeholder="Enter your password"
+                  placeholder="Confirm your password"
                   required
                 />
-                <button
-                  type="button"
-                  className="absolute inset-y-0 right-0 flex items-center px-2 text-gray-600"
-                  onClick={handleShowPassword}
-                >
-                  {showPassword ? <AiOutlineEyeInvisible /> : <AiOutlineEye />}
-                </button>
               </div>
             </div>
-  
-            {/* Confirm Password Input */}
-            <div className="mb-4">
-              <label htmlFor="confirm-password" className="block text-sm font-medium text-gray-700">Confirm Password</label>
-              <input
-                type={showPassword ? "text" : "password"}
-                id="confirm-password"
-                value={confirmPassword}
-                onChange={handleChange}
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                placeholder="Re-enter your password"
-                required
-              />
-              {!passwordsMatch && <p className="text-red-500 text-xs">Passwords do not match</p>}
-            </div>
-  
-            {/* Terms and Conditions Checkbox */}
-            <div className="mb-4 flex items-center">
+
+            {/* Terms and Conditions */}
+            <div className="flex items-center mb-4">
               <input
                 type="checkbox"
                 id="terms"
                 checked={termsAccepted}
                 onChange={() => setTermsAccepted(!termsAccepted)}
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+                className="mr-2"
                 required
               />
-              <label htmlFor="terms" className="ml-2 block text-sm text-gray-900">
-                I accept the terms and conditions
+              <label htmlFor="terms" className="text-sm text-gray-600">
+                I accept the <Link to="/terms" className="text-blue-500 underline">terms and conditions</Link>.
               </label>
             </div>
-  
+
             {/* Error and Success Messages */}
-            {error&& <Alert type="danger" message={error as string}/>}
+            {error && <Alert type="danger" message={error as string} />}
             {success && <p className="text-green-500">{success as string}</p>}
   
             {/* Submit Button */}
@@ -289,6 +278,9 @@ const Register: React.FC = () => {
                   Explore
           </button>
         </div>
+
+        {/* Otp Popup */}
+        {showPopup && <OtpModal onClose={() => setShowPopup(false)} />}
       </div>
     )
   );
