@@ -1,0 +1,54 @@
+/* GOOGLE FONTS */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+  padding: 0;
+  margin: 0;
+}
+
+
+html{
+  scroll-behavior: smooth;
+  color: #000;
+  font-family: 'Poppins', sans-serif;
+}
+
+
+/* Loading animation for loading screen */
+
+.loader {
+  border: 8px solid rgba(255, 255, 255, 0.2);
+  border-left-color: #ffffff;
+  border-radius: 50%;
+  width: 64px;
+  height: 64px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* end of loading animation for loading screen */
+
+.custom-scrollbar {
+  max-height: calc(90vh - 2rem);
+  overflow-y: auto;
+  scrollbar-width: none; /* For Firefox */
+  -ms-overflow-style: none; /* For Internet Explorer and Edge */
+  padding-right: 1rem; /* Add some padding to compensate for the removed scrollbar */
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  display: none; /* For Chrome, Safari, and Opera */
+}
