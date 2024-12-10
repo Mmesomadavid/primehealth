@@ -11,7 +11,7 @@ interface OtpVerificationProps {
 }
 
 const Otp = ({ email }: OtpVerificationProps) => {
-  const [otp, setOtp] = useState<string[]>(Array(5).fill(""))
+  const [otp, setOtp] = useState<string[]>(Array(6).fill(""))
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [minutes, setMinutes] = useState(2)
@@ -102,30 +102,30 @@ const Otp = ({ email }: OtpVerificationProps) => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
-      <Card className="w-full max-w-md bg-white shadow-sm">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-blue-600">
+      <Card className="w-full max-w-xl bg-white shadow-sm">
         <CardContent className="p-6">
           <button 
             onClick={() => navigate(-1)} 
             className="mb-6 hover:bg-gray-100 p-2 rounded-full transition-colors"
           >
-            <ArrowLeft className="h-5 w-5 text-gray-500" />
+            <ArrowLeft className="h-6 w-6 text-gray-500" />
           </button>
 
           <div className="mb-8">
-            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-6">
-              <Mail className="h-6 w-6 text-gray-600" />
+            <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+              <Mail className="h-8 w-8 text-gray-600" />
             </div>
-            <h1 className="text-2xl font-semibold mb-2">
-              Enter verification code from email
+            <h1 className="text-3xl font-semibold mb-3">
+              Verify Your Email
             </h1>
-            <p className="text-gray-600">
+            <p className="text-lg text-gray-600">
               Please enter the code we emailed you<br />
               {email}
             </p>
           </div>
 
-          <div className="flex gap-2 mb-6">
+          <div className="flex gap-3 mb-6">
             {otp.map((digit, index) => (
               <Input
                 key={index}
@@ -136,7 +136,7 @@ const Otp = ({ email }: OtpVerificationProps) => {
                 value={digit}
                 onChange={e => handleChange(index, e.target.value)}
                 onKeyDown={e => handleKeyDown(index, e)}
-                className={`w-full h-16 text-center text-2xl font-medium rounded-lg 
+                className={`w-full h-20 text-center text-[30px] font-medium rounded-lg 
                   ${digit ? 'bg-[#D1F2D9] border-[#D1F2D9]' : 'bg-gray-50 border-gray-200'} 
                   focus:border-gray-300 focus:ring-0`}
               />
@@ -148,23 +148,23 @@ const Otp = ({ email }: OtpVerificationProps) => {
           <Button
             onClick={handleSubmit}
             disabled={loading || otp.includes("")}
-            className="w-full h-12 mb-4 bg-black hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2"
+            className="w-full h-14 mb-4 bg-black hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2 text-lg"
           >
             {loading ? "Verifying..." : (
               <>
                 Continue
-                <ArrowRight className="h-5 w-5" />
+                <ArrowRight className="h-6 w-6" />
               </>
             )}
           </Button>
 
-          <div className="text-center text-sm text-gray-600">
+          <div className="text-center text-base text-gray-600">
             {minutes > 0 || seconds > 0 ? (
               <p>Resend code in {minutes}:{seconds < 10 ? `0${seconds}` : seconds}</p>
             ) : (
               <Button
                 variant="link"
-                className="p-0 h-auto text-gray-600 hover:text-gray-800"
+                className="p-0 h-auto text-gray-600 hover:text-gray-800 text-base"
                 onClick={handleResendOtp}
               >
                 Resend code
