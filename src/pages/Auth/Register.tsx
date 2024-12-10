@@ -1,22 +1,29 @@
 "use client"
 
 import { useState, FormEvent } from "react"
+import { User, Mail, Lock, Eye, EyeOff, Hospital, Phone } from 'lucide-react'
+import { Link } from "react-router-dom"
 import { Button } from "../../components/UI/Button"
 import { Input } from "../../components/UI/Input"
 import { Label } from "../../components/UI/Label"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/UI/Card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/UI/Card"
 import { CustomRadioGroup, RadioOption } from "../../components/UI/custom-radio-group"
 import { Checkbox } from "../../components/UI/Checkbox"
-import { Mail, Phone, Lock, Eye, EyeOff, Hospital, User } from 'lucide-react'
-import { Link } from "react-router-dom"
-import Otp from "../../components/Otp"
-import Logo from '../../assets/full-black.png'
 import Alert from "../../components/UI/Alert"
+import Otp from "../../components/Otp"
+import Logo from '../../assets/logo-black.svg'
 
-export default function RegistrationPage() {
+export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    phone: "",
+    username: "",
     email: "",
+    phone: "",
     password: "",
     accountType: "",
   })
@@ -30,23 +37,17 @@ export default function RegistrationPage() {
   const accountOptions: RadioOption[] = [
     {
       value: "hospital",
-      label: "Signup as health organisation",
+      label: "Healthcare Organization",
       description: "For hospitals, clinics, and healthcare providers",
-      icon: <Hospital className="h-14 w-14 bg-gray-200 text-black p-4 rounded-full" />,
+      icon: <Hospital className="h-14 w-14 bg-primary/10 text-primary p-4 rounded-full" />,
     },
     {
       value: "doctor",
-      label: "Signup as Doctor",
-      description: "For Doctor and Health Practitioners",
-      icon: <User className="h-14 w-14 bg-gray-200 text-black p-4 rounded-full" />,
+      label: "Medical Professional",
+      description: "For doctors and health practitioners",
+      icon: <User className="h-14 w-14 bg-primary/10 text-primary p-4 rounded-full" />,
     },
   ]
-
-  const calculatePasswordStrength = (password: string) => {
-    return Math.min(100, (password.length / 12) * 100)
-  }
-
-  const passwordStrength = calculatePasswordStrength(formData.password)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target
@@ -58,14 +59,7 @@ export default function RegistrationPage() {
     setError(null)
     setLoading(true)
 
-    if (!formData.email && !formData.phone) {
-      setError("Either email or phone must be provided.")
-      setLoading(false)
-      return
-    }
-
     try {
-      console.log("Submitting form data:", formData)
       const response = await fetch(`${url}/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -80,8 +74,7 @@ export default function RegistrationPage() {
 
       setSuccess(data.message)
     } catch (err) {
-      console.error("Registration error:", err)
-      setError(err instanceof Error ? err.message : 'An error occurred during registration. Please try again.')
+      setError(err instanceof Error ? err.message : 'Registration failed')
     } finally {
       setLoading(false)
     }
@@ -93,22 +86,35 @@ export default function RegistrationPage() {
 
   return (
     <div className="flex min-h-screen">
-      <div className="flex-1 overflow-y-auto p-8 lg:p-8">
+      <div className="flex-1 overflow-y-auto p-8">
         <div className="mb-8">
-          <img src={Logo} alt="Prime Health Logo" width={150} height={50} />
+          <img src={Logo} alt="Logo" className="h-8" />
         </div>
-        <Card className="mx-auto max-w-[550px] border-none">
+        <Card className="mx-auto max-w-[550px] border-none shadow-none">
           <CardHeader>
-            <CardTitle className="text-3xl font-semibold tracking-tight">Create Account</CardTitle>
+            <CardTitle className="text-3xl font-semibold">Let's get started</CardTitle>
             <CardDescription>
-              Create Your Primehealth account to get started
+              Complete the form below to create your account
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="phone">Phone number</Label>
+                  <Label htmlFor="username">Username</Label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
+                    <Input
+                      id="username"
+                      placeholder="Enter your username"
+                      className="pl-10"
+                      value={formData.username}
+                      onChange={handleChange}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="username">Phone</Label>
                   <div className="relative flex">
                     <span className="inline-flex items-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 text-sm">
                       +234
@@ -117,8 +123,8 @@ export default function RegistrationPage() {
                     <Input
                       id="phone"
                       type="tel"
-                      placeholder="Enter your phone number"
-                      className="pl-16 rounded-l-none"
+                      placeholder="Enter Phone Number"
+                      className="pl-10 rounded-l-none"
                       value={formData.phone}
                       onChange={handleChange}
                     />
@@ -145,7 +151,7 @@ export default function RegistrationPage() {
                     <Input
                       id="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Enter your password"
+                      placeholder="Create a password"
                       className="pl-10 pr-10"
                       value={formData.password}
                       onChange={handleChange}
@@ -164,77 +170,60 @@ export default function RegistrationPage() {
                       )}
                     </Button>
                   </div>
-                  <div className="h-1 w-full bg-gray-200 mt-2">
-                    <div
-                      className="h-1 bg-green-500 transition-all duration-300 ease-in-out"
-                      style={{ width: `${passwordStrength}%` }}
-                    ></div>
-                  </div>
                 </div>
-              </div>
-              <div className="space-y-4">
-                <Label>Select Account Type</Label>
-                <CustomRadioGroup
-                  options={accountOptions}
-                  value={formData.accountType}
-                  onChange={(value) => setFormData(prev => ({ ...prev, accountType: value }))}
-                />
-              </div>
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="terms"
-                  checked={agreedToTerms}
-                  onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
-                />
-                <label
-                  htmlFor="terms"
-                  className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  I agree to the{" "}
-                  <Link to="/terms" className="text-primary underline">
-                    terms and conditions
-                  </Link>
-                </label>
+                <div className="space-y-4">
+                  <Label>Account Type</Label>
+                  <CustomRadioGroup
+                    options={accountOptions}
+                    value={formData.accountType}
+                    onChange={(value) => setFormData(prev => ({ ...prev, accountType: value }))}
+                  />
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Checkbox
+                    id="terms"
+                    checked={agreedToTerms}
+                    onCheckedChange={(checked) => setAgreedToTerms(checked as boolean)}
+                  />
+                  <label
+                    htmlFor="terms"
+                    className="text-sm text-gray-600"
+                  >
+                    I agree to the{" "}
+                    <Link to="/terms" className="text-primary hover:underline">
+                      terms and conditions
+                    </Link>
+                  </label>
+                </div>
               </div>
 
               {error && <Alert type="danger" message={error} onClose={() => setError(null)} />}
 
-              <Button className="w-full bg-blue-800 text-white" size="lg" type="submit" disabled={!agreedToTerms || loading}>
+
+              <Button 
+                type="submit" 
+                className="w-full bg-blue-700 text-sm text-white"
+                disabled={!agreedToTerms || loading}
+              >
                 {loading ? "Creating account..." : "Create account"}
               </Button>
-              <div className="text-center text-sm">
+
+              <p className="text-center text-sm text-gray-600">
                 Already have an account?{" "}
-                <Link to="/login" className="text-primary underline">
-                  Log in
+                <Link to="/login" className="text-primary hover:underline">
+                  Sign in
                 </Link>
-              </div>
+              </p>
             </form>
           </CardContent>
         </Card>
       </div>
       <div className="hidden lg:block lg:flex-1">
-        <div className="relative h-full">
-          <img
-            src="https://firebasestorage.googleapis.com/v0/b/prime-health-611ef.appspot.com/o/auth%2Fpexels-thirdman-5327647.jpg?alt=media&token=b2a8d5ee-e5a0-4b6f-9dc1-4a6737595ac0"
-            alt="Testimonial"
-            className="object-cover w-full h-full"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-zinc-900/50 to-zinc-900/0" />
-          <div className="absolute bottom-0 left-0 right-0 p-12 text-white">
-            <blockquote className="space-y-2">
-              <p className="text-lg">
-                Untitled&apos;s software helps us manage cash flow, financial reporting and payroll with ease. It&apos;s a great solution for startups looking for an efficient way to manage their finances all-in-one.
-              </p>
-              <footer className="text-sm">
-                <p className="font-medium">Maya Rothwell</p>
-                <p>Founder & CEO</p>
-                <div className="mt-2">
-                  <p className="font-medium">Open Ventures</p>
-                </div>
-              </footer>
-            </blockquote>
-          </div>
-        </div>
+        <img
+          src="https://firebasestorage.googleapis.com/v0/b/prime-health-611ef.appspot.com/o/auth%2Fpexels-thirdman-5327656.jpg?alt=media&token=c05959ec-ccc8-455b-93b4-ca8463bf4019"
+          alt="Registration"
+          className="object-cover w-full h-full"
+        />
       </div>
     </div>
   )
