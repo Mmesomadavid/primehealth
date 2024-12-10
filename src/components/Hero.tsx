@@ -1,92 +1,71 @@
-import React from 'react';
-import image1 from '../assets/cog.png';
-import image2 from '../assets/cylinder.png'
-import image3 from '../assets/noodle.png';
-import image4 from '../assets/pyramid.png';
-import image5 from '../assets/spring.png';
-import image6 from '../assets/star.png';
-import image7 from '../assets/tube.png';
-import productImg from '../assets/product-image.png'
-const Hero: React.FC = () => {
+import { Button } from "./UI/Button"
+
+const Hero = () => {
   return (
-    <div className="relative min-h-screen bg-transparent overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-16 text-center">
-        <div className="mt-8 sm:mt-12 relative">
-          <div className="inline-flex items-center bg-transparent rounded-full px-4 py-2 shadow-lg relative z-20">
-            <svg className="w-6 h-6 text-blue-500 mr-2" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25zm0 3v3.75h.008v.008H12v-3.758z" />
-            </svg>
-            <span className="text-sm font-medium  text-gray-900">Prime Health 1.0</span>
-          </div>
-          
-          {/* Scattered images */}
-          <div className="absolute inset-0 -z-10">
-            <img 
-              src={image1} 
-              alt="Decorative image" 
-              className="absolute top-[-10%] left-[5%] w-40 h-40 object-contain opacity-50 animate-float"
-              style={{animationDelay: '0s'}}
-            />
-
-            <img 
-              src={image2} 
-              alt="Decorative image" 
-              className="absolute top-[80%] left-[95%] w-48 h-48 object-contain opacity-50 animate-float"
-              style={{animationDelay: '1s'}}
-            />
-            <img 
-              src={image3} 
-              alt="Decorative image" 
-              className="absolute top-[90%] left-[15%] w-48 h-48 object-contain opacity-50 animate-float"
-              style={{animationDelay: '1s'}}
-            />
-            <img 
-              src={image4} 
-              alt="Decorative image" 
-              className="absolute bottom-[80%] right-[18%] w-44 h-44 object-contain opacity-50 animate-float"
-              style={{animationDelay: '2s'}}
-            />
-            <img 
-              src={image5} 
-              alt="Decorative image" 
-              className="absolute top-[70%] right-[95%] w-36 h-36 object-contain opacity-50 animate-float"
-              style={{animationDelay: '3s'}}
-            />
-            <img 
-              src={image6} 
-              alt="Decorative image" 
-              className="absolute bottom-[70%] left-[85%] w-36 h-36 object-contain opacity-50 animate-float"
-              style={{animationDelay: '3s'}}
-            />
-            <img 
-              src={image7} 
-              alt="Decorative image" 
-              className="absolute top-[90%] left-[75%] w-36 h-36 object-contain opacity-50 animate-float"
-              style={{animationDelay: '3s'}}
-            />
-          </div>
-
-          <h1 className="mt-4 text-4xl font-medium text-gray-800 tracking-tight sm:text-5xl md:text-6xl lg:text-7xl relative z-10">
-            Empower<br />
-            HealthCare with Prime Care<br />
-            Technology & AI Features
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 md:py-24">
+      <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="space-y-8">
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-medium tracking-tight">
+            Get Simplified Banking
           </h1>
+          <p className="text-xl text-gray-600">
+            Get full visibility over your business spending—Saving your time
+          </p>
+          <Button className="rounded-full" size="lg">
+            Apply Now →
+          </Button>
         </div>
 
-         {/* Dashboard Preview */}
-         <div className="mt-16 sm:mt-24 relative mx-auto max-w-6xl">
-          <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-            <img
-              src={productImg}
-              alt="PrimeHealth Dashboard"
-              className="w-full h-auto"
-            />
+        <div className="relative">
+          <div className="rounded-2xl overflow-hidden">
+            <div className="relative aspect-[4/3]">
+              <img
+                src="https://firebasestorage.googleapis.com/v0/b/prime-health-611ef.appspot.com/o/auth%2Fnational-cancer-institute-L8tWZT4CcVQ-unsplash%20(3).jpg?alt=media&token=0ba9d3ce-f928-4d36-989b-0909a8c15b79"
+                alt="Business banking"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-black/30" />
+              <div className="absolute bottom-0 left-0 right-0 p-8 text-white">
+                <h2 className="text-2xl md:text-3xl font-medium mb-4">
+                  Apply in 10 — Minutes for business banking
+                </h2>
+                <div className="flex gap-3">
+                  <Button variant="default" className="rounded-full" size="lg">
+                    Try Grab — Free
+                  </Button>
+                  <Button variant="outline" className="rounded-full bg-white/10 backdrop-blur-sm border-white/20" size="lg">
+                    Book Demo
+                  </Button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
+      <div className="mt-24 space-y-12">
+        <div className="flex flex-wrap gap-8 items-center justify-center grayscale opacity-70">
+          <img src="/placeholder.svg?height=40&width=120" alt="Rakuten" width={120} height={40} />
+          <img src="/placeholder.svg?height=40&width=120" alt="NCR" width={120} height={40} />
+          <img src="/placeholder.svg?height=40&width=120" alt="Monday.com" width={120} height={40} />
+          <img src="/placeholder.svg?height=40&width=120" alt="Disney" width={120} height={40} />
+          <img src="/placeholder.svg?height=40&width=120" alt="Dropbox" width={120} height={40} />
+        </div>
+
+        <p className="text-2xl md:text-3xl lg:text-4xl text-center max-w-4xl mx-auto">
+          Now we&apos;ve made — capital accessible even more companies{" "}
+          <span className="inline-flex items-center gap-2 text-gray-600">
+            <span className="w-6 h-6 rounded-full bg-gray-200" />
+            directly through embedded{" "}
+            <svg className="w-4 h-4 rotate-45" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M7 17L17 7M17 7H7M17 7V17" />
+            </svg>
+            {" "}the software platforms
+          </span>
+        </p>
+      </div>
     </div>
-  );
-};
+  )
+}
 
 export default Hero;
-
