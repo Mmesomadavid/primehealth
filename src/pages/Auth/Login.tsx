@@ -1,61 +1,38 @@
-'use client'
+"use client"
 
-import { useState, FormEvent, ChangeEvent } from 'react'
-import { ArrowRight, Eye, EyeOff, Lock, Mail } from 'lucide-react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import dashboardUI from '../../assets/product-image.png'
+import { Eye, EyeOff } from 'lucide-react'
 import { contextData } from '../../context/AuthContext'
+import { Button } from '../../components/UI/Button'
+import { Input } from '../../components/UI/Input'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/UI/Card"
 import Alert from '../../components/UI/Alert'
+import Logo from '../../assets/full-black.png'
 import Otp from '../../components/Otp'
-import Logo from '../../assets/logo-black.svg'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../../components/UI/Card"
 
-const Login = () => {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  })
+export default function Login() {
+  const [formData, setFormData] = useState({ email: '', password: '' })
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-  const [success, setSuccess] = useState<string | null>(null)
-  const url = import.meta.env.VITE_REACT_APP_SERVER_URL
+  const [emailNotVerified, setEmailNotVerified] = useState(false)
   const { login } = contextData()
   const navigate = useNavigate()
+  const url = import.meta.env.VITE_REACT_APP_SERVER_URL
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const { id, value } = e.target
-    setFormData(prev => ({ ...prev, [id]: value }))
-  }
-
-  const resendOtp = async (): Promise<void> => {
-    setSuccess(null)
-
-    try {
-      const res = await fetch(`${url}/auth/resend-otp`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: formData.email }),
-      })
-
-      const data = await res.json()
-
-      if (res.ok) setSuccess(data.message)
-      else throw new Error(data.message)
-    } catch (err: any) {
-      setError(err.message)
-    }
-  }
-
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     setError(null)
-
-    if (formData.email.length < 7 || !formData.email.includes("@"))
-      return setError("Please enter a valid email address")
-    if (formData.password.length < 5)
-      return setError("Your password must be at least 5 characters")
-
     setLoading(true)
+    setEmailNotVerified(false)
 
     try {
       const res = await fetch(`${url}/auth/login`, {
@@ -63,114 +40,112 @@ const Login = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       })
-
       const data = await res.json()
-
+      
       if (res.ok) {
         await login(data)
         navigate(data.accountType === "doctor" ? "/dashboard/doctor" : "/dashboard/hospital")
       } else {
-        throw new Error(data.message)
+        if (data.message === "Email not verified") {
+          setEmailNotVerified(true)
+        } else {
+          throw new Error(data.message)
+        }
       }
     } catch (err: any) {
       setError(err.message)
-      if (err.message === "Email not verified") await resendOtp()
     } finally {
       setLoading(false)
     }
   }
 
-  if (error === "Email not verified" && success) {
+  if (emailNotVerified) {
     return <Otp email={formData.email} />
   }
 
   return (
-    <div className="min-h-screen bg-white flex flex-col">
-      {/* Header */}
-      <header className="p-6 flex justify-between items-center">
-        <img src={Logo} alt="Primehealth Logo" className="h-12 w-auto" />
-        <Link to="/forgot-password" className="text-sm text-blue-600 hover:text-blue-800">
-          Forgot Password?
-        </Link>
-      </header>
+    <div className="min-h-screen grid lg:grid-cols-2">
+      <div className="flex flex-col justify-between p-8 lg:p-12">
+        <div className="flex justify-between items-center">
+          <img src={Logo} alt="Logo" className="h-10" />
+          <Button variant="ghost" className="text-sm" onClick={() => navigate('/forgot-password')}>
+            Forgot password?
+          </Button>
+        </div>
 
-      {/* Main Content */}
-      <main className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-        <Card className="w-full max-w-md">
-          <CardHeader>
-            <CardTitle className="text-2xl font-semibold text-gray-900">
-              Log in to your account
-            </CardTitle>
-            <CardDescription className="text-sm text-gray-500">
-              Welcome back to Primehealth, please enter your details
+        <Card className="border-0 shadow-none">
+          <CardHeader className="space-y-1">
+            <CardTitle className="text-3xl font-semibold">Get Started Now</CardTitle>
+            <CardDescription>
+              Enter your credentials to access your account
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="space-y-4">
-                <div className="relative">
-                  <Mail className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <input
+            <div className="grid gap-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="space-y-2">
+                  <Input
                     id="email"
-                    name="email"
+                    placeholder="name@example.com"
                     type="email"
-                    required
-                    className="block w-full rounded-lg border border-gray-200 pl-10 pr-4 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    placeholder="Email address"
                     value={formData.email}
-                    onChange={handleChange}
-                  />
-                </div>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
-                  <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     required
-                    className="block w-full rounded-lg border border-gray-200 pl-10 pr-10 py-3 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
-                    placeholder="Password"
-                    value={formData.password}
-                    onChange={handleChange}
                   />
-                  <button
-                    type="button"
-                    className="absolute right-3 top-3 text-gray-400"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
-                  </button>
                 </div>
-              </div>
+                <div className="space-y-2">
+                  <div className="relative">
+                    <Input
+                      id="password"
+                      placeholder="Enter your password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                      required
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      className="absolute right-2 top-2.5 h-4 w-4 px-0"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </Button>
+                  </div>
+                </div>
 
-              {error && <Alert type="danger" message={error} onClose={() => setError(null)} />}
-              {success && <Alert type="success" message={success} onClose={() => setSuccess(null)} />}
+                {error && <Alert type="danger" message={error} onClose={() => setError(null)} />}
 
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-lg bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {loading ? "Logging in..." : "Log in"}
-              </button>
-            </form>
-
-            {/* Create account link */}
-            <div className="mt-6 text-center">
-              <Link
-                to="/register"
-                className="inline-flex items-center text-sm text-gray-500 hover:text-gray-700"
-              >
-                Don't have an account? Create one
-                <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
+                <Button type="submit" className="w-full bg-blue-700 text-white text-sm" disabled={loading}>
+                  {loading ? "Signing in..." : "Sign in"}
+                </Button>
+              </form>
+            </div>
+            <div className="mt-4 text-center text-sm">
+              Don't have an account?{" "}
+              <Button variant="link" className="p-0" onClick={() => navigate('/register')}>
+                Sign up
+              </Button>
             </div>
           </CardContent>
         </Card>
-      </main>
+      </div>
+
+      <div className="hidden lg:block bg-blue-600 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-t from-primary to-primary/80" />
+        <div className="relative h-full p-12 text-white">
+          <h2 className="text-4xl font-semibold mb-4">
+            The simplest way to manage your workforce
+          </h2>
+          <img
+            src={dashboardUI}
+            alt="Dashboard Preview"
+            className="absolute bottom-0 left-1/2 transform -translate-x-1/2 w-[100%] rounded-t-xl shadow-2xl"
+          />
+        </div>
+      </div>
     </div>
   )
 }
-
-export default Login
 
