@@ -1,84 +1,82 @@
-import { useState, useRef, type ChangeEvent, type KeyboardEvent } from "react";
-import { useNavigate } from "react-router-dom";
-import Alert from "./UI/Alert";
-import { contextData } from "../context/AuthContext";
-import verifyemailImg from '../assets/email-animation.gif';
+import React, { useState, useRef, useEffect } from "react"
+import { useNavigate } from "react-router-dom"
+import { Button } from "./UI/Button"
+import { Card, CardContent } from "./UI/Card"
+import { Input } from "./UI/Input"
+import { Mail, ArrowLeft, ArrowRight } from 'lucide-react'
+import Alert from "./UI/Alert"
 
-
-export interface OtpProps {
-  email: string;
+interface OtpVerificationProps {
+  email: string
 }
 
-const Otp: React.FC<OtpProps> = ({ email }) => {
-  const navigate = useNavigate();
-  const [otp, setOtp] = useState<string[]>(Array(6).fill(""));
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const url = import.meta.env.VITE_REACT_APP_SERVER_URL;
-  const inputRefs = useRef<Array<HTMLInputElement | null>>([]);
-  const { login } = contextData();
+const Otp = ({ email }: OtpVerificationProps) => {
+  const [otp, setOtp] = useState<string[]>(Array(5).fill(""))
+  const [error, setError] = useState<string | null>(null)
+  const [loading, setLoading] = useState(false)
+  const [minutes, setMinutes] = useState(2)
+  const [seconds, setSeconds] = useState(43)
+  const inputRefs = useRef<Array<HTMLInputElement | null>>([])
+  const navigate = useNavigate()
+  const url = import.meta.env.VITE_REACT_APP_SERVER_URL
 
-  const handleChange = (index: number, value: string): void => {
-    if (!/^\d*$/.test(value)) return;
-
-    const newOtp = [...otp];
-    newOtp[index] = value;
-    setOtp(newOtp);
-
-    if (value && index < otp.length - 1) {
-      inputRefs.current[index + 1]?.focus();
-    }
-  };
-
-  const handleKeyDown = (index: number, e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.key === "Backspace" && otp[index] === "") {
-      if (index > 0) {
-        inputRefs.current[index - 1]?.focus();
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1)
       }
-    }
-  };
-
-  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>): void => {
-    const pasteData = e.clipboardData.getData("text").slice(0, otp.length);
-    if (/^\d*$/.test(pasteData)) {
-      const newOtp = pasteData.split("");
-      setOtp(newOtp);
-
-      const lastIndex = newOtp.length - 1;
-      if (inputRefs.current[lastIndex]) {
-        inputRefs.current[lastIndex].focus();
+      if (seconds === 0) {
+        if (minutes === 0) {
+          clearInterval(interval)
+        } else {
+          setMinutes(minutes - 1)
+          setSeconds(59)
+        }
       }
+    }, 1000)
+
+    return () => clearInterval(interval)
+  }, [minutes, seconds])
+
+  const handleChange = (index: number, value: string) => {
+    if (!/^\d*$/.test(value)) return
+
+    const newOtp = [...otp]
+    newOtp[index] = value
+    setOtp(newOtp)
+
+    if (value && index < 4) {
+      inputRefs.current[index + 1]?.focus()
     }
-  };
+  }
 
-  const handleResendOtp = async (): Promise<void> => {
-    setSuccess(null);
-    setError(null);
+  const handleKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otp[index] && index > 0) {
+      inputRefs.current[index - 1]?.focus()
+    }
+  }
 
+  const handleResendOtp = async () => {
     try {
       const res = await fetch(`${url}/auth/resend-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
-      });
-
-      const data = await res.json();
-
-      if (res.ok) setSuccess("OTP sent successfully!");
-      else throw new Error(data.message);
+      })
+      if (res.ok) {
+        setMinutes(2)
+        setSeconds(43)
+      } else {
+        throw new Error("Failed to resend OTP")
+      }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message)
     }
+  }
 
-    setTimeout(() => {
-      setSuccess(null);
-    }, 3000);
-  };
-
-  const handleSubmit = async (): Promise<void> => {
-    setLoading(true);
-    setError(null);
+  const handleSubmit = async () => {
+    setLoading(true)
+    setError(null)
 
     try {
       const res = await fetch(`${url}/auth/verify-otp`, {
@@ -88,77 +86,96 @@ const Otp: React.FC<OtpProps> = ({ email }) => {
           code: otp.join(""),
           email,
         }),
-      });
-
-      const data = await res.json();
-
+      })
+      const data = await res.json()
+      
       if (res.ok) {
-        await login(data);
-        data.accountType === "doctor"
-          ? navigate("/dashboard/doctor/")
-          : navigate("/dashboard/hospital/");
-      } else throw new Error(data.message);
+        navigate(data.accountType === "doctor" ? "/dashboard/doctor" : "/dashboard/hospital")
+      } else {
+        throw new Error(data.message)
+      }
     } catch (err: any) {
-      setError(err.message);
+      setError(err.message)
     } finally {
-      setLoading(false);
+      setLoading(false)
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-blue-800 ">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-lg relative">
-        <div className="flex flex-col items-center mb-8">
-          <div className="bg-blue-50 p-3 rounded-full mb-4">
-            <img src={verifyemailImg} alt="email Verification" className="w-26 h-26" />
-          </div>
-          <h2 className="text-2xl font-semibold text-gray-900 mb-2">Verify your email</h2>
-          <p className="text-gray-500 text-center">
-            We have successfully sent a code to<br />
-            <span className="font-bold underline">{email}</span>
-          </p>
-        </div>
-
-        <div className="flex justify-center gap-2 mb-8">
-          {otp.map((digit, index) => (
-            <input
-              key={index}
-              ref={(el) => (inputRefs.current[index] = el)}
-              type="text"
-              inputMode="numeric"
-              maxLength={1}
-              value={digit}
-              onChange={(e: ChangeEvent<HTMLInputElement>) => handleChange(index, e.target.value)}
-              onKeyDown={(e) => handleKeyDown(index, e)}
-              onPaste={handlePaste}
-              className="w-12 h-12 text-center text-2xl font-semibold border-2 rounded-lg focus:border-blue-500 focus:ring-2 focus:ring-blue-200 outline-none transition-all"
-            />
-          ))}
-        </div>
-
-        <div className="text-center mb-6">
-          <span className="text-gray-500">Didn't get your code? </span>
-          <button
-            onClick={handleResendOtp}
-            className="text-blue-600 hover:text-blue-700 font-medium"
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gray-50">
+      <Card className="w-full max-w-md bg-white shadow-sm">
+        <CardContent className="p-6">
+          <button 
+            onClick={() => navigate(-1)} 
+            className="mb-6 hover:bg-gray-100 p-2 rounded-full transition-colors"
           >
-            Send a new code
+            <ArrowLeft className="h-5 w-5 text-gray-500" />
           </button>
-        </div>
 
-        <button
-          onClick={handleSubmit}
-          disabled={loading || otp.includes("")}
-          className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors disabled:bg-blue-400"
-        >
-          {loading ? "Verifying..." : "Verify"}
-        </button>
+          <div className="mb-8">
+            <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-6">
+              <Mail className="h-6 w-6 text-gray-600" />
+            </div>
+            <h1 className="text-2xl font-semibold mb-2">
+              Enter verification code from email
+            </h1>
+            <p className="text-gray-600">
+              Please enter the code we emailed you<br />
+              {email}
+            </p>
+          </div>
 
-        {error && <Alert type="danger" message={error as string} onClose={() => console.log("Alert closed")} />}
-        {success && <Alert type="success" message={success as string} onClose={() => console.log("Alert closed")} />}
-      </div>
+          <div className="flex gap-2 mb-6">
+            {otp.map((digit, index) => (
+              <Input
+                key={index}
+                ref={el => inputRefs.current[index] = el}
+                type="text"
+                inputMode="numeric"
+                maxLength={1}
+                value={digit}
+                onChange={e => handleChange(index, e.target.value)}
+                onKeyDown={e => handleKeyDown(index, e)}
+                className={`w-full h-16 text-center text-2xl font-medium rounded-lg 
+                  ${digit ? 'bg-[#D1F2D9] border-[#D1F2D9]' : 'bg-gray-50 border-gray-200'} 
+                  focus:border-gray-300 focus:ring-0`}
+              />
+            ))}
+          </div>
+          
+          {error && <Alert type="danger" message={error} onClose={() => setError(null)} />}
+
+          <Button
+            onClick={handleSubmit}
+            disabled={loading || otp.includes("")}
+            className="w-full h-12 mb-4 bg-black hover:bg-gray-800 text-white rounded-lg flex items-center justify-center gap-2"
+          >
+            {loading ? "Verifying..." : (
+              <>
+                Continue
+                <ArrowRight className="h-5 w-5" />
+              </>
+            )}
+          </Button>
+
+          <div className="text-center text-sm text-gray-600">
+            {minutes > 0 || seconds > 0 ? (
+              <p>Resend code in {minutes}:{seconds < 10 ? `0${seconds}` : seconds}</p>
+            ) : (
+              <Button
+                variant="link"
+                className="p-0 h-auto text-gray-600 hover:text-gray-800"
+                onClick={handleResendOtp}
+              >
+                Resend code
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
     </div>
-  );
-};
+  )
+}
 
-export default Otp;
+export default Otp
+
