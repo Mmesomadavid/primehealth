@@ -134,7 +134,7 @@ const Register: React.FC = () => {
         <div className="flex w-full items-center justify-center px-4 sm:px-6 lg:w-1/2">
           <div className="w-full max-w-md space-y-8">
             <div>
-              <h2 className="text-2xl font-bold text-gray-900">Get started</h2>
+              <h2 className="text-4xl font-semibold text-gray-900">Get started</h2>
               <p className="mt-2 text-sm text-gray-600">
                 Create your account now
               </p>
@@ -151,7 +151,7 @@ const Register: React.FC = () => {
                       type="button"
                       onClick={() => setAccountType("doctor")}
                       className={`flex items-center w-full p-4 border rounded-lg ${
-                        accountType === "doctor" ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
+                        accountType === "doctor" ? "border-blue-500 bg-blue-50" : "border-gray-300"
                       }`}
                     >
                       <User className="h-5 w-5 mr-3" />
@@ -164,7 +164,7 @@ const Register: React.FC = () => {
                       type="button"
                       onClick={() => setAccountType("hospital")}
                       className={`flex items-center w-full p-4 border rounded-lg ${
-                        accountType === "hospital" ? "border-indigo-500 bg-indigo-50" : "border-gray-300"
+                        accountType === "hospital" ? "border-blue-500 bg-blue-50" : "border-gray-300"
                       }`}
                     >
                       <Hospital className="h-5 w-5 mr-3" />
@@ -191,7 +191,7 @@ const Register: React.FC = () => {
                           type="text"
                           value={firstName}
                           onChange={handleChange}
-                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           placeholder="John"
                           required
                         />
@@ -210,7 +210,7 @@ const Register: React.FC = () => {
                           type="text"
                           value={lastName}
                           onChange={handleChange}
-                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                          className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           placeholder="Doe"
                           required
                         />
@@ -231,7 +231,7 @@ const Register: React.FC = () => {
                         type="email"
                         value={email}
                         onChange={handleChange}
-                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         placeholder="you@example.com"
                         required
                       />
@@ -246,7 +246,7 @@ const Register: React.FC = () => {
                       value={phone}
                       onChange={handlePhoneChange}
                       defaultCountry="NG"
-                      className="block w-full py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      className="block w-full py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                     />
                   </div>
 
@@ -263,7 +263,7 @@ const Register: React.FC = () => {
                         type={showPassword ? "text" : "password"}
                         value={password}
                         onChange={handleChange}
-                        className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                         placeholder="••••••••"
                         required
                       />
@@ -288,15 +288,15 @@ const Register: React.FC = () => {
                   checked
                   disabled
                   type="checkbox"
-                  className="h-4 w-4 rounded border-gray-300 text-indigo-600"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600"
                 />
                 <p className="text-sm text-gray-600">
                   I agree to Carepulse's{" "}
-                  <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
                     Terms & Conditions
                   </a>{" "}
                   and{" "}
-                  <a href="#" className="font-medium text-indigo-600 hover:text-indigo-500">
+                  <a href="#" className="font-medium text-blue-600 hover:text-blue-500">
                     Privacy Policy
                   </a>
                 </p>
@@ -306,7 +306,7 @@ const Register: React.FC = () => {
                 <Button
                   type="submit"
                   disabled={loading}
-                  className="w-full rounded-md bg-blue-600 px-4 py-6 text-md font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                  className="w-full rounded-md bg-blue-600 px-4 py-6 text-md font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                 >
                   Create Account
                 </Button>
@@ -319,7 +319,7 @@ const Register: React.FC = () => {
                 Already have an account?{" "}
                 <Link
                   to="/login"
-                  className="font-medium text-indigo-600 hover:text-indigo-500"
+                  className="font-medium text-blue-600 hover:text-blue-500"
                 >
                   Sign in
                 </Link>
