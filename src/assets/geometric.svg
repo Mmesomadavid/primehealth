@@ -1,0 +1,22 @@
+<svg width="800" height="800" viewBox="0 0 800 800" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g opacity="0.1">
+    <path d="M400 0L800 200V600L400 800L0 600V200L400 0Z" fill="url(#paint0_linear)" />
+    <path d="M400 100L700 250V550L400 700L100 550V250L400 100Z" fill="url(#paint1_linear)" />
+    <path d="M400 200L600 300V500L400 600L200 500V300L400 200Z" fill="url(#paint2_linear)" />
+  </g>
+  <defs>
+    <linearGradient id="paint0_linear" x1="400" y1="0" x2="400" y2="800" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="paint1_linear" x1="400" y1="100" x2="400" y2="700" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="paint2_linear" x1="400" y1="200" x2="400" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#4F46E5"/>
+      <stop offset="1" stop-color="#4F46E5" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+</svg>
+

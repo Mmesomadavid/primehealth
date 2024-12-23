@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }: any) => {
 
     try {
       setFetching(true);
-      const res = await fetch(`${url}/auth/me`, {
+      const res = await fetch(`${url}/api/auth/me`, {
         headers: {
           'Authorization': `Bearer ${token}`,
         },
@@ -68,5 +68,5 @@ export const AuthProvider = ({ children }: any) => {
   );
 };
 
-const useAuthContext = () => useContext(AuthContext);
+export const useAuthContext = () => useContext(AuthContext);
 export const contextData = useAuthContext;
