@@ -45,8 +45,8 @@ export default function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-4 cursor-pointer">
-              <Avatar className='border-2 border-gray-300'>
-                <AvatarImage src="/placeholder.svg" alt="User" />
+              <Avatar className='border-2 border-gray-300 w-14 h-14'>
+                <AvatarImage src={user.profilePicture} alt="User" />
                 <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
               </Avatar>
               <div className="hidden md:block">
