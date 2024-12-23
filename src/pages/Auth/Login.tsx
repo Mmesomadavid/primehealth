@@ -57,7 +57,6 @@ const Login: React.FC = () => {
     try {
       const res = await fetch(`${url}/api/auth/login`, {
         method: "POST",
-        mode: 'no-cors',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       })
