@@ -5,6 +5,7 @@ import { Button } from "../UI/Button";
 import { ScrollArea } from "../../components/UI/Scroll-area";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuthContext } from '../../context/AuthContext';
+import logo from '../../assets/primehealth1.svg'
 
 interface SidebarProps extends React.HTMLAttributes<HTMLDivElement> {
   isMobileMenuOpen: boolean;
@@ -79,7 +80,8 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isMobileMenuOpen, setIsMob
             <div className="px-4 py-2">
               {(isOpen || isMobile) && (
                 <h2 className="mb-2 px-2 text-xl font-semibold tracking-tight flex justify-between items-center">
-                  Ovalent
+                  {/* Display the logo here instead of text */}
+                  <img src={logo} alt="Logo" className="h-8" />
                   {isMobile && (
                     <Button
                       variant="ghost"
@@ -171,4 +173,3 @@ const Sidebar: React.FC<SidebarProps> = ({ className, isMobileMenuOpen, setIsMob
 }
 
 export default Sidebar;
-
