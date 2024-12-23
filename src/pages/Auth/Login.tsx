@@ -29,6 +29,7 @@ const Login: React.FC = () => {
       const res = await fetch(`${url}/api/auth/resend-otp`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        mode: 'no-cors',
         body: JSON.stringify({ email }),
       })
       const data = await res.json()
@@ -56,6 +57,7 @@ const Login: React.FC = () => {
     try {
       const res = await fetch(`${url}/api/auth/login`, {
         method: "POST",
+        mode: 'no-cors',
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),
       })
