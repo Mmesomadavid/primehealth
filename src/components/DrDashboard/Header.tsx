@@ -45,7 +45,7 @@ export default function Header() {
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <div className="flex items-center gap-4 cursor-pointer">
-              <Avatar className='border-2 border-gray-300 w-14 h-14'>
+              <Avatar className='border-2 border-gray-300 w-12 h-12'>
                 <AvatarImage src={user.profilePicture} alt="User" />
                 <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
               </Avatar>
@@ -69,7 +69,7 @@ export default function Header() {
               >
                 <div className="flex items-center gap-2 p-2">
                   <Avatar className="h-10 w-10">
-                    <AvatarImage src="/placeholder.svg" alt="User" />
+                    <AvatarImage src={user.profilePicture} alt="User" />
                     <AvatarFallback>{user.firstName[0]}{user.lastName[0]}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col space-y-0.5">
