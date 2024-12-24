@@ -31,7 +31,7 @@ interface Hospital {
 
 const PatientsTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [patients, setPatients] = useState<Patient[]>([])
+  const [patients] = useState<Patient[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [hospitals, setHospitals] = useState<Hospital[]>([])  // Added hospitals state
   const totalPages = 5 // Example total pages
@@ -40,14 +40,6 @@ const PatientsTable: React.FC = () => {
 
   // Simulating fetching patients and hospitals data
   useEffect(() => {
-    // Simulating a fetch call for patients
-    const fetchedPatients: Patient[] = [
-      { id: '1', name: 'John Doe', gender: 'Male', doctor: 'Dr. Smith', appointmentStatus: 'Scheduled', registrationDate: '2024-12-23' },
-      { id: '2', name: 'Jane Smith', gender: 'Female', doctor: 'Dr. Adams', appointmentStatus: 'Completed', registrationDate: '2024-11-19' },
-      // Add more patients as needed
-    ]
-    setPatients(fetchedPatients)
-
     // Simulating a fetch call for hospitals
     const fetchedHospitals: Hospital[] = [
       { id: '1', name: 'City Hospital', location: 'Downtown' },

@@ -365,4 +365,3 @@ const NewPatientModal: React.FC<NewPatientModalProps> = ({
 }
 
 export default NewPatientModal
-
