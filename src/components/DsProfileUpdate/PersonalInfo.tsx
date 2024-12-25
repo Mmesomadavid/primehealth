@@ -6,7 +6,6 @@ import { Label } from '../UI/Label'
 import { Textarea } from '../UI/Textarea'
 import { User, Calendar, Users, MapPin, Home, Building, Hash, Camera, AlignLeft } from 'lucide-react'
 
-
 interface PersonalInfoProps {
   formData: any
   setFormData: (data: any) => void
@@ -14,7 +13,7 @@ interface PersonalInfoProps {
 
 const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) => {
   const handleChange = (field: string, value: string | number | boolean) => {
-    setFormData({ ...formData, [field]: value })
+    setFormData((prevData: any) => ({ ...prevData, [field]: value }))
   }
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,7 +33,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
         <Label htmlFor="profilePicture">Profile Picture</Label>
         <div className="relative w-32 h-32 mx-auto">
           <div className="w-full h-full rounded-full overflow-hidden bg-gray-200">
-            {formData.profilePicture ? (
+            {formData?.profilePicture ? (
               <img
                 src={formData.profilePicture}
                 alt="Profile"
@@ -66,7 +65,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
           <Input
             id="username"
             placeholder="Enter your username"
-            value={formData.username || ''}
+            value={formData?.username || ''}
             onChange={(e) => handleChange('username', e.target.value)}
             className="pl-10"
             required
@@ -81,7 +80,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
           <Textarea
             id="biography"
             placeholder="Tell us about yourself"
-            value={formData.biography || ''}
+            value={formData?.biography || ''}
             onChange={(e) => handleChange('biography', e.target.value)}
             rows={4}
             className="pl-10 w-full"
@@ -97,7 +96,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
             <Input
               id="dateOfBirth"
               type="date"
-              value={formData.dateOfBirth || ''}
+              value={formData?.dateOfBirth || ''}
               onChange={(e) => handleChange('dateOfBirth', e.target.value)}
               className="pl-10"
               required
@@ -109,11 +108,11 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
           <div className="relative">
             <Users className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
             <select
-            id="gender"
-            value={formData.gender || ''}
-            onChange={(e) => handleChange('gender', e.target.value)}
-            className="pl-10 border rounded-md h-11 w-full"
-            required
+              id="gender"
+              value={formData?.gender || ''}
+              onChange={(e) => handleChange('gender', e.target.value)}
+              className="pl-10 border rounded-md h-11 w-full"
+              required
             >
               <option value="">Select gender</option>
               <option value="male">Male</option>
@@ -124,7 +123,6 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
         </div>
       </div>
 
-
       <div className="space-y-2">
         <Label htmlFor="streetAddress">Street Address</Label>
         <div className="relative">
@@ -132,7 +130,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
           <Input
             id="streetAddress"
             placeholder="Enter your street address"
-            value={formData.streetAddress || ''}
+            value={formData?.streetAddress || ''}
             onChange={(e) => handleChange('streetAddress', e.target.value)}
             className="pl-10"
           />
@@ -147,7 +145,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
             <Input
               id="city"
               placeholder="Enter your city"
-              value={formData.city || ''}
+              value={formData?.city || ''}
               onChange={(e) => handleChange('city', e.target.value)}
               className="pl-10"
             />
@@ -160,7 +158,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
             <Input
               id="state"
               placeholder="Enter your state"
-              value={formData.state || ''}
+              value={formData?.state || ''}
               onChange={(e) => handleChange('state', e.target.value)}
               className="pl-10"
             />
@@ -175,7 +173,7 @@ const PersonalInfo: React.FC<PersonalInfoProps> = ({ formData, setFormData }) =>
           <Input
             id="zipCode"
             placeholder="Enter your zip code"
-            value={formData.zipCode || ''}
+            value={formData?.zipCode || ''}
             onChange={(e) => handleChange('zipCode', e.target.value)}
             className="pl-10"
           />

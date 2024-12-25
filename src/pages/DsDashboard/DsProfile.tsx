@@ -1,7 +1,7 @@
 'use client'
 
 import { Avatar, AvatarFallback, AvatarImage } from "../../components/UI/Avatar"
-import { Badge } from "../../components/Badge"
+import { Badge } from "../../components/UI/Badge"
 import { Button } from "../../components/UI/Button"
 import { Card, CardContent } from "../../components/UI/card"
 import { StarIcon, MapPinIcon, PhoneIcon, MailIcon, BuildingIcon, CalendarIcon, DiscIcon as LicenseIcon, Video, MessageSquare } from 'lucide-react'

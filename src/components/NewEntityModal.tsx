@@ -1,367 +1,247 @@
 'use client'
 
-import React, { useState, useCallback } from 'react'
-import { X, Upload, User, Building } from 'lucide-react'
+import { useState } from 'react'
 import { Button } from './UI/Button'
 import { Input } from './UI/Input'
 import { Label } from './UI/Label'
 import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "./UI/Select"
-import { Avatar, AvatarFallback, AvatarImage } from "./UI/Avatar"
-import { Card } from './UI/card'
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '../components/UI/Collapsible'
+import { Calendar, ChevronDown, Shield, FileText, Pill, Upload,  User, Mail, Phone } from 'lucide-react'
+import { cn } from '../lib/utils'
+import { Avatar, AvatarFallback, AvatarImage } from '../components/UI/Avatar'
+import { RadioGroup, RadioGroupItem } from '../components/UI/RadioGroup'
+import { DatePicker } from '../components/UI/date-picker'
 
-interface Hospital {
-  id: string
-  name: string
-  image?: string
-}
-
-interface NewPatientModalProps {
+interface NewEntityModalProps {
   isOpen: boolean
   onClose: () => void
-  hospitals: Hospital[]
 }
 
-const NewPatientModal: React.FC<NewPatientModalProps> = ({ 
-  isOpen, 
-  onClose,
-  hospitals = []
-}) => {
-  const [profileImage, setProfileImage] = useState('')
-  const [selectedHospital, setSelectedHospital] = useState('')
+const NewEntityModal = ({ isOpen, onClose }: NewEntityModalProps) => {
+  const [profileImage, setProfileImage] = useState<string | null>(null)
+  const [uploading, setUploading] = useState(false)
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
-    dateOfBirth: '',
-    hospitalId: '',
+    gender: '',
+    dateOfBirth: new Date(),
     email: '',
     phone: '',
-    gender: '',
-    bloodType: '',
-    allergies: '',
-    emergencyContactName: '',
-    emergencyContactRelationship: '',
-    emergencyContactPhone: '',
   })
 
-  const uploadImage = useCallback(async (file: File) => {
-    try {
-      const formData = new FormData()
-      formData.append('file', file)
-      formData.append('upload_preset', 'primehealth')
-      
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/mmesoma/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      )
+  const [openSection, setOpenSection] = useState<string | null>(null)
 
-      const data = await response.json()
-      setProfileImage(data.secure_url)
-    } catch (error) {
-      console.error('Failed to upload image:', error)
-    }
-  }, [])
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setUploading(true)
+      try {
+        const formData = new FormData()
+        formData.append('file', file)
+        formData.append('upload_preset', 'primehealth')
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/patient`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          profileImage,
-          allergies: formData.allergies.split(',').map(allergy => allergy.trim()),
-          emergencyContact: {
-            name: formData.emergencyContactName,
-            relationship: formData.emergencyContactRelationship,
-            phone: formData.emergencyContactPhone,
-          },
-        }),
-      })
+        const response = await fetch(
+          `https://api.cloudinary.com/v1_1/mmesoma/image/upload`,
+          {
+            method: 'POST',
+            body: formData,
+          }
+        )
 
-      if (!response.ok) {
-        throw new Error('Failed to create patient')
+        const data = await response.json()
+        setProfileImage(data.secure_url)
+      } catch (error) {
+        console.error('Error uploading image:', error)
+      } finally {
+        setUploading(false)
       }
-
-      onClose()
-    } catch (error) {
-      console.error('Error creating patient:', error)
     }
   }
 
   if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black/80 flex items-start justify-center z-50 overflow-y-auto">
-      <div className="relative bg-white rounded-lg w-full max-w-2xl my-4 mx-auto">
-        <div className="flex items-center justify-between p-4 border-b">
-          <div>
-            <h2 className="text-lg font-semibold">Add New Patient</h2>
-            <p className="text-sm text-muted-foreground">Enter patient information below</p>
+    <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 min-h-screen w-full">
+      <div className="bg-white rounded-lg w-full max-w-2xl relative max-h-[90vh] overflow-y-auto m-4">
+        {/* Header */}
+        <div className="sticky top-0 bg-white z-10 border-b">
+          <div className="p-6">
+            <h2 className="text-xl font-semibold">Create New Patient</h2>
+            <p className='text-sm text-gray-500 mt-1'>Fill in the credentials of the patient you'd like to initialize</p>
           </div>
-          <Button 
-            variant="ghost" 
-            size="icon"
-            onClick={onClose}
-            className="h-8 w-8 border border-gray-600"
-          >
-            <X className="h-4 w-4" />
-          </Button>
         </div>
 
-        <form onSubmit={handleSubmit}>
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto p-4">
-            <div className="space-y-6">
-              {/* Profile Section */}
-              <Card className="p-4">
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
-                    {profileImage ? (
-                      <img
-                        src={profileImage}
-                        alt="Profile"
-                        className="h-16 w-16 rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
-                        <User className="h-8 w-8 text-muted-foreground" />
-                      </div>
-                    )}
-                    <input
-                      type="file"
-                      id="profilePicture"
-                      className="hidden"
-                      accept="image/*"
-                      onChange={(e) => e.target.files?.[0] && uploadImage(e.target.files[0])}
-                    />
-                    <label
-                      htmlFor="profilePicture"
-                      className="absolute bottom-0 right-0 bg-white rounded-full p-1 shadow-sm cursor-pointer border"
-                    >
-                      <Upload className="h-3 w-3" />
-                    </label>
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label htmlFor="firstName">First name</Label>
-                        <Input
-                          id="firstName"
-                          placeholder="Enter first name"
-                          value={formData.firstName}
-                          onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div>
-                        <Label htmlFor="lastName">Last name</Label>
-                        <Input
-                          id="lastName"
-                          placeholder="Enter last name"
-                          value={formData.lastName}
-                          onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                          required
-                        />
-                      </div>
-                    </div>
-                  </div>
+        <div className="p-6 space-y-8">
+          {/* Profile Section */}
+          <div className="flex flex-col items-center space-y-6">
+            <div className="relative">
+              <Avatar className="h-24 w-24">
+                <AvatarImage src={profileImage || ''} />
+                <AvatarFallback className="bg-blue-100 text-blue-600 text-xl">
+                  {formData.firstName[0]}{formData.lastName[0]}
+                </AvatarFallback>
+              </Avatar>
+              <label
+                htmlFor="avatar-upload"
+                className={cn(
+                  "absolute bottom-0 right-0 bg-blue-500 text-white p-2 rounded-full cursor-pointer hover:bg-blue-600 transition-all",
+                  uploading && "opacity-50 cursor-not-allowed"
+                )}
+              >
+                <Upload className="h-4 w-4" />
+              </label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleImageUpload}
+                disabled={uploading}
+              />
+            </div>
+            
+            <div className="grid grid-cols-2 gap-6 w-full">
+              <div className="space-y-2">
+                <Label htmlFor="firstName">First Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    id="firstName"
+                    value={formData.firstName}
+                    onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                    className="pl-10"
+                    placeholder="Enter first name"
+                  />
                 </div>
-              </Card>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="lastName">Last Name</Label>
+                <div className="relative">
+                  <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    id="lastName"
+                    value={formData.lastName}
+                    onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                    className="pl-10"
+                    placeholder="Enter last name"
+                  />
+                </div>
+              </div>
+            </div>
 
-              {/* Personal Information */}
-              <Card className="p-4">
-                <h3 className="text-sm font-medium mb-3">Personal Information</h3>
-                <div className="grid gap-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="email">Email</Label>
-                      <Input
-                        id="email"
-                        type="email"
-                        placeholder="Enter email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="phone">Phone</Label>
-                      <Input
-                        id="phone"
-                        type="tel"
-                        placeholder="Enter phone number"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      />
-                    </div>
+            <div className="w-full space-y-6">
+              <div className="space-y-2">
+                <Label>Gender</Label>
+                <RadioGroup
+                  value={formData.gender}
+                  onValueChange={(value) => setFormData({ ...formData, gender: value })}
+                  className="flex space-x-4"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="female" id="female" />
+                    <Label htmlFor="female">Female</Label>
                   </div>
-                  <div className="grid grid-cols-3 gap-3">
-                    <div>
-                      <Label htmlFor="dateOfBirth">Date of birth</Label>
-                      <Input
-                        id="dateOfBirth"
-                        type="date"
-                        value={formData.dateOfBirth}
-                        onChange={(e) => setFormData({ ...formData, dateOfBirth: e.target.value })}
-                        required
-                      />
-                    </div>
-                    <div>
-                      <Label>Gender</Label>
-                      <Select 
-                        value={formData.gender}
-                        onValueChange={(value) => setFormData({ ...formData, gender: value })}
-                        required
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="Male">Male</SelectItem>
-                          <SelectItem value="Female">Female</SelectItem>
-                          <SelectItem value="Other">Other</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label>Blood Type</Label>
-                      <Select 
-                        value={formData.bloodType}
-                        onValueChange={(value) => setFormData({ ...formData, bloodType: value })}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map((type) => (
-                            <SelectItem key={type} value={type}>{type}</SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="male" id="male" />
+                    <Label htmlFor="male">Male</Label>
                   </div>
-                </div>
-              </Card>
+                </RadioGroup>
+              </div>
 
-              {/* Medical Information */}
-              <Card className="p-4">
-                <h3 className="text-sm font-medium mb-3">Medical Information</h3>
-                <div className="space-y-3">
-                  <div>
-                    <Label htmlFor="allergies">Allergies</Label>
-                    <Input
-                      id="allergies"
-                      placeholder="Enter allergies (comma-separated)"
-                      value={formData.allergies}
-                      onChange={(e) => setFormData({ ...formData, allergies: e.target.value })}
-                    />
-                  </div>
-                  <div>
-                    <Label>Hospital</Label>
-                    <Select 
-                      value={selectedHospital}
-                      onValueChange={(value) => {
-                        setSelectedHospital(value)
-                        setFormData({ ...formData, hospitalId: value })
-                      }}
-                      required
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select hospital" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {hospitals.map((hospital) => (
-                          <SelectItem
-                            key={hospital.id}
-                            value={hospital.id}
-                            className="flex items-center gap-2 p-2"
-                          >
-                            <div className="flex items-center gap-2">
-                              <Avatar className="h-6 w-6">
-                                <AvatarImage src={hospital.image} alt={hospital.name} />
-                                <AvatarFallback>
-                                  <Building className="h-4 w-4" />
-                                </AvatarFallback>
-                              </Avatar>
-                              <span>{hospital.name}</span>
-                            </div>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </Card>
-
-              {/* Emergency Contact */}
-              <Card className="p-4">
-                <h3 className="text-sm font-medium mb-3">Emergency Contact</h3>
-                <div className="grid gap-3">
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <Label htmlFor="emergencyContactName">Name</Label>
-                      <Input
-                        id="emergencyContactName"
-                        placeholder="Contact name"
-                        value={formData.emergencyContactName}
-                        onChange={(e) => setFormData({ ...formData, emergencyContactName: e.target.value })}
-                      />
-                    </div>
-                    <div>
-                      <Label htmlFor="emergencyContactRelationship">Relationship</Label>
-                      <Input
-                        id="emergencyContactRelationship"
-                        placeholder="Relationship"
-                        value={formData.emergencyContactRelationship}
-                        onChange={(e) => setFormData({ ...formData, emergencyContactRelationship: e.target.value })}
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <Label htmlFor="emergencyContactPhone">Phone</Label>
-                    <Input
-                      id="emergencyContactPhone"
-                      type="tel"
-                      placeholder="Contact phone"
-                      value={formData.emergencyContactPhone}
-                      onChange={(e) => setFormData({ ...formData, emergencyContactPhone: e.target.value })}
-                    />
-                  </div>
-                </div>
-              </Card>
+              <div className="space-y-2">
+                <Label>Date of Birth</Label>
+                <DatePicker
+                  date={formData.dateOfBirth}
+                  onDateChange={(date) => setFormData({ ...formData, dateOfBirth: date })}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-2 p-4 border-t">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={onClose}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="submit"
-              className="bg-blue-600 hover:bg-blue-700 text-white"
-            >
-              Add Patient
-            </Button>
+          {/* Contact Details */}
+          <div className="space-y-6">
+            <h3 className="font-medium text-lg">Contact Information</h3>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-2">
+                <Label htmlFor="email">Email</Label>
+                <div className="relative">
+                  <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="pl-10"
+                    placeholder="Enter email address"
+                  />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="phone">Phone</Label>
+                <div className="relative">
+                  <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                  <Input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="pl-10"
+                    placeholder="Enter phone number"
+                  />
+                </div>
+              </div>
+            </div>
           </div>
-        </form>
+
+          {/* Expandable Sections */}
+          <div className="space-y-3">
+            <h3 className="font-medium text-lg">Additional Information</h3>
+            {[
+              { id: 'appointments', icon: Calendar, title: 'Appointments' },
+              { id: 'insurance', icon: Shield, title: 'Insurance' },
+              { id: 'claims', icon: FileText, title: 'Claims' },
+              { id: 'prescriptions', icon: Pill, title: 'Prescriptions' },
+            ].map((section) => (
+              <Collapsible
+                key={section.id}
+                open={openSection === section.id}
+                onOpenChange={() => setOpenSection(openSection === section.id ? null : section.id)}
+              >
+                <CollapsibleTrigger className="flex items-center justify-between w-full p-4 rounded-lg border hover:bg-gray-50 transition-colors">
+                  <div className="flex items-center space-x-3">
+                    <section.icon className="h-5 w-5 text-gray-500" />
+                    <span className="font-medium">{section.title}</span>
+                  </div>
+                  <ChevronDown className={cn(
+                    "h-4 w-4 text-gray-500 transition-transform duration-200",
+                    openSection === section.id ? "transform rotate-180" : ""
+                  )} />
+                </CollapsibleTrigger>
+                <CollapsibleContent className="p-4 space-y-4 border-x border-b rounded-b-lg">
+                  <div className="text-sm text-gray-500">
+                    Add {section.title.toLowerCase()} information here
+                  </div>
+                </CollapsibleContent>
+              </Collapsible>
+            ))}
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="sticky bottom-0 bg-white border-t p-6 flex justify-end space-x-3">
+          <Button variant="outline" onClick={onClose}>
+            Cancel
+          </Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            Create Patient
+          </Button>
+        </div>
       </div>
     </div>
   )
 }
 
-export default NewPatientModal
+export default NewEntityModal

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState} from 'react'
 import { 
   Table, 
   TableBody, 
@@ -23,31 +23,15 @@ interface Patient {
   
 }
 
-interface Hospital {
-  id: string;
-  name: string;
-  location: string;
-}
 
 const PatientsTable: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [patients] = useState<Patient[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
-  const [hospitals, setHospitals] = useState<Hospital[]>([])  // Added hospitals state
   const totalPages = 5 // Example total pages
 
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1)
 
-  // Simulating fetching patients and hospitals data
-  useEffect(() => {
-    // Simulating a fetch call for hospitals
-    const fetchedHospitals: Hospital[] = [
-      { id: '1', name: 'City Hospital', location: 'Downtown' },
-      { id: '2', name: 'General Medical Center', location: 'Uptown' },
-      // Add more hospitals as needed
-    ]
-    setHospitals(fetchedHospitals)
-  }, [])
 
   const renderTableHeader = () => {
     return (
@@ -181,7 +165,6 @@ const PatientsTable: React.FC = () => {
       <NewEntityModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
-        hospitals={hospitals}  // Passing hospitals data to modal
       />
     </div>
   )

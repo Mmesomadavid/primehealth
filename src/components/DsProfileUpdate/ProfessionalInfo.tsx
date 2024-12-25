@@ -8,7 +8,7 @@ import { Textarea } from '../UI/Textarea'
 import {  FileText, Calendar, Building, } from 'lucide-react'
 import { Slider } from '../UI/Slider'
 import { Button } from '../UI/Button'
-import { Badge } from '../Badge'
+import { Badge } from '../UI/Badge'
 import { Card, CardContent, CardHeader, CardTitle } from '../UI/card'
 import { InputWithIcon } from '../UI/input-with-icon'
 
