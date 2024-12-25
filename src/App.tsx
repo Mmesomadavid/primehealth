@@ -1,6 +1,6 @@
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useEffect } from "react";
-import Home from "./pages/Home";
+// import Home from "./pages/Home";
 import Login from "./pages/Auth/Login";
 import Register from "./pages/Auth/Register";
 import PasswordReset from "./pages/Auth/PasswordReset";
@@ -39,9 +39,9 @@ function App() {
     return (
       <Routes>
         {/* Public routes */}
-        <Route path="/" element={<Home />} />
+        {/* <Route path="/" element={<Home />} /> */}
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={<Register />} />
         <Route path="/reset-password" element={<PasswordReset />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
@@ -117,4 +117,3 @@ function App() {
 }
 
 export default App;
-
